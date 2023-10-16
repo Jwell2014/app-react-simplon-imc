@@ -1,4 +1,5 @@
 import React from 'react';
+import InterpretationIMC from './InterpretationIMC';
 
 interface ResultIMCProps {
     imc: string | null
@@ -12,6 +13,7 @@ function ResultIMC({ imc }: ResultIMCProps) {
                     <p>Indice de masse corporelle (IMC)</p>
                     <p>{imc}</p>
                     <p>Interprétation (d'après l'OMS)</p>
+                    <InterpretationIMC score={imc} />
                     {imc < "18.5" && (
                         <p>Insuffisance pondérale (maigreur)</p>
                     )}

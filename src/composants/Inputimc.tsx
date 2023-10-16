@@ -1,19 +1,19 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 
 interface InputimcProps {
     type: string;
     genre: string;
-    inputData: (value: string) => void;
+    inputValue: string;
+    onInputChange: (value: string) => void;
 }
 
-function Inputimc({ type, genre, inputData }: InputimcProps) {
-    const [inputValue, setInputValue] = useState<string>("");
+function Inputimc({ type, genre, inputValue, onInputChange }: InputimcProps) {
 
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setInputValue(event.target.value);
-        inputData(event.target.value);
+        onInputChange(event.target.value);
     };
+
 
     return (
         <div>
