@@ -9,7 +9,7 @@ function CalculerIMCButton({ onCalculer }: CalculerIMCButtonProps) {
 
 
     return (
-        <button onClick={onCalculer}>Calculer</button>
+        <button onClick={onCalculer}>CALCULER</button>
     );
 };
 

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 
 
 interface InputimcProps {
@@ -17,13 +17,12 @@ function Inputimc({ type, genre, inputValue, onInputChange }: InputimcProps) {
 
     return (
         <div>
-            <p>Indiquez votre {genre} : </p>
+            <h3>Indiquez votre {genre} : </h3>
             <input
                 type="text"
                 placeholder={type}
                 value={inputValue}
                 onChange={handleInputChange}
-                style={{ textAlign: 'end', width: '200px' }}
             />
         </div>
     );
