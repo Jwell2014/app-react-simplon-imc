@@ -55,7 +55,6 @@ function App() {
       <img src={result} alt='' width="100%" />
 
       <div className='app-input'>
-
         <Inputimc type='cm' genre='taille' inputValue={inputTaille} onInputChange={setInputTaille} />
         <Inputimc type='kg' genre='poids' inputValue={inputPoids} onInputChange={setInputPoids} />
       </div>

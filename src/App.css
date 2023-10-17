@@ -78,3 +78,42 @@ input{
 .obesite-morbide{
   color: rgb(253, 0, 0);
 }
+
+
+/* Styles pour les écrans de largeur moyenne (par exemple, tablettes) */
+@media screen and (max-width: 768px) and (max-width: 1024px){
+  .app-input {
+    top: 70%;
+    left: 30%;
+  }
+  h3{
+    font-size: 12px;
+  }
+  input{
+    text-align: end;
+    width: 100px;
+    border-radius: 15px;
+    padding: 5px;
+    margin: 30px;
+  }
+}
+
+/* Styles pour les écrans étroits (par exemple, smartphones) */
+@media screen and (max-width: 480px) {
+  .app-input {
+    .app-input {
+      top: 70%;
+      left: 30%;
+    }
+    h3{
+      font-size: 12px;
+    }
+    input{
+      text-align: end;
+      width: 100px;
+      border-radius: 15px;
+      padding: 5px;
+      margin: 30px;
+    }
+  }
+}
