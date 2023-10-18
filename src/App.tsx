@@ -5,6 +5,7 @@ import CalculerIMCButton from './composants/CalculerIMCButton';
 import ResultIMC from './composants/ResultIMC';
 import imgIMC from './assets/imc.jpeg';
 import result from './assets/result.jpeg'
+import axios from 'axios';
 
 
 function App() {
@@ -16,30 +17,55 @@ function App() {
 
   const calculateIMC = (taille: number, poids: number) => {
     // Formule de l'IMC : poids en kilogrammes / (taille en mètres)^2
-    const tailleEnMetres = taille / 100; // Convertir la taille de cm en mètres
-    return (poids / (tailleEnMetres * tailleEnMetres)).toFixed(2); // Résultat arrondi à 2 décimales
+    const tailleEnM = parseInt(inputTaille) / 100; // Convertir la taille en mètres
+    return (poids / (tailleEnM * tailleEnM)).toFixed(2); // Résultat arrondi à 2 décimales
   };
 
   const handleCalculer = () => {
-    const newIMC = calculateIMC(parseFloat(inputTaille), parseFloat(inputPoids));
-    setIMC(newIMC);
+    const taille = parseInt(inputTaille); // Convertir la taille en mètres
+    const poids = parseInt(inputPoids);
+    const imc = calculateIMC(taille, poids)
+    const imcINT = parseInt(imc)
+
+    console.log("tailleEnM", taille)
+    console.log("poids", poids)
+    console.log("imc", imcINT)
+
+
+    const data = {
+      taille: taille,
+      poids: poids,
+      imc: imcINT
+
+    };
+
+    axios.post('https://localhost:7200/api/MesureControleur', data)
+      .then(response => {
+        // Traitement de la réponse ici
+        console.log(response.data); // Les données de la réponse
+      })
+      .catch(error => {
+        // Gestion des erreurs
+        console.error(error);
+      });
 
     // Réinitialiser les champs ici
     setInputTaille("");
     setInputPoids("");
-    if (newIMC < "18.5") {
-      setIMCCategory("insuffisance-ponderale");
-    } else if (newIMC >= "18.5" && newIMC < "25") {
-      setIMCCategory("corpulence-normale");
-    } else if (newIMC >= "25" && newIMC < "30") {
-      setIMCCategory("surpoids");
-    } else if (newIMC > "30" || newIMC < "35") {
-      setIMCCategory("obesite-modere")
-    } else if (newIMC > "35" || newIMC < "40") {
-      setIMCCategory("obesite-severe")
-    } else if (newIMC > "40") {
-      setIMCCategory("obesite-morbide")
-    }
+
+    // if (newIMC < "18.5") {
+    //   setIMCCategory("insuffisance-ponderale");
+    // } else if (newIMC >= "18.5" && newIMC < "25") {
+    //   setIMCCategory("corpulence-normale");
+    // } else if (newIMC >= "25" && newIMC < "30") {
+    //   setIMCCategory("surpoids");
+    // } else if (newIMC > "30" || newIMC < "35") {
+    //   setIMCCategory("obesite-modere")
+    // } else if (newIMC > "35" || newIMC < "40") {
+    //   setIMCCategory("obesite-severe")
+    // } else if (newIMC > "40") {
+    //   setIMCCategory("obesite-morbide")
+    // }
   };
 
 
