@@ -86,6 +86,36 @@ input{
   color: rgb(253, 0, 0);
 }
 
+.custom-table {
+  width: 80%; /* Fait en sorte que le tableau prenne toute la largeur de son conteneur */
+  border-collapse: collapse; /* Pour fusionner les bordures de cellules */
+  border: 2px solid #ddd; /* Ajoute une bordure au tableau */
+
+}
+
+.custom-table th, .custom-table td {
+  border: 1px solid #ddd; /* Ajoute une bordure aux cellules du tableau */
+  padding: 8px; /* Ajoute un espacement à l'intérieur des cellules */
+}
+
+.custom-table th {
+  background-color: #f2f2f2; /* Couleur de fond pour la ligne d'en-tête */
+  text-align: left;
+}
+
+/* Style pour les lignes paires du tableau (facultatif) */
+.custom-table tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+.table-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh; /* Cela peut varier en fonction de la mise en page de votre page */
+ 
+}
+
 
 /* Styles pour les écrans de largeur moyenne (par exemple, tablettes) */
 @media screen and (max-width: 768px) and (max-width: 1024px){

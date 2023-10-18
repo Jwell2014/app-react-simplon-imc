@@ -3,9 +3,10 @@ import InterpretationIMC from './InterpretationIMC';
 import result from '../assets/result.jpeg'
 
 interface ResultIMCProps {
-    imc: string | null
+    imc: number | null
 }
 function ResultIMC({ imc }: ResultIMCProps) {
+
     return (
         <div>
             {imc !== null && (
