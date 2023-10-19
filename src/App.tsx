@@ -6,6 +6,8 @@ import ResultIMC from './composants/ResultIMC';
 import imgIMC from './assets/imc.jpeg';
 import result from './assets/result.jpeg'
 import axios from 'axios';
+import Chart from 'chart.js/auto';
+
 
 
 function App() {
@@ -13,12 +15,14 @@ function App() {
   const [inputPoids, setInputPoids] = useState<string>("")
 
   const [imc, setIMC] = useState<number | null>(null);
-  const [imcCategory, setIMCCategory] = useState<string>("");
 
-  const [data, setData] = useState<Array<{ Id: number; taille: number; poids: number; imc: number }>>([]);
+  const [mesureData, setMesureData] = useState<Array<{ Id: number; taille: number; poids: number; imc: number }>>([]);
   const [loading, setLoading] = useState(true);
 
   const [lastMeasure, setLastMeasure] = useState<{ Id: number; taille: number; poids: number; imc: number }>();
+
+  const [showChart, setShowChart] = useState(false);
+
 
 
   useEffect(() => {
@@ -26,7 +30,7 @@ function App() {
     axios.get('https://localhost:7200/api/MesureControleur')
       .then(response => {
         // Ici, 'response.data' contient les données récupérées depuis le backend.
-        setData(response.data);
+        setMesureData(response.data);
         setLoading(false); // Mettre fin au chargement une fois les données récupérées.
       })
       .catch(error => {
@@ -34,6 +38,14 @@ function App() {
         setLoading(false); // Assurez-vous de gérer les erreurs.
       });
   }, []); // Le tableau vide [] signifie que cet effet ne s'exécute qu'une fois (après le montage).
+
+  useEffect(() => {
+    // Utilisez vos données de mesure pour créer le graphique
+    createIMCChart(mesureData);
+    // Afficher le canevas après avoir créé le graphique
+    setShowChart(true)
+  }, []);
+
 
   if (loading) {
     return <div>Chargement en cours...</div>;
@@ -66,38 +78,71 @@ function App() {
     axios.post('https://localhost:7200/api/MesureControleur', NewMesure)
       .then(response => {
         // Traitement de la réponse ici
-        console.log(response.data); // Les données de la réponse
-        // Mise à jour de l'état de la dernière mesure
+        console.log(response.data);
+
+        // Met à jour le tableau mesureData avec la nouvelle mesure
+        const updatedMesureData = [...mesureData, response.data];
         setLastMeasure(response.data);
 
-        // Réinitialiser les champs ici
+        // Réinitialisation des champs ici
         setInputTaille('');
         setInputPoids('');
         setIMC(response.data.imc);
         const newMeasure = response.data; // La nouvelle mesure ajoutée
 
         // Ajouter la nouvelle mesure au tableau de données
-        setData([...data, newMeasure]);
+        setMesureData([...mesureData, newMeasure]);
+        // Après avoir ajouté la nouvelle mesure et mis à jour mesureData, appelez createIMCChart pour mettre à jour le graphique.
+        createIMCChart(updatedMesureData);
+
       })
       .catch(error => {
         // Gestion des erreurs
         console.error(error);
       });
-
-    // if (newIMC < "18.5") {
-    //   setIMCCategory("insuffisance-ponderale");
-    // } else if (newIMC >= "18.5" && newIMC < "25") {
-    //   setIMCCategory("corpulence-normale");
-    // } else if (newIMC >= "25" && newIMC < "30") {
-    //   setIMCCategory("surpoids");
-    // } else if (newIMC > "30" || newIMC < "35") {
-    //   setIMCCategory("obesite-modere")
-    // } else if (newIMC > "35" || newIMC < "40") {
-    //   setIMCCategory("obesite-severe")
-    // } else if (newIMC > "40") {
-    //   setIMCCategory("obesite-morbide")
-    // }
   };
+
+
+  let imcChart: Chart | null = null;
+
+  function createIMCChart(mesureData: Array<{ Id: number; taille: number; poids: number; imc: number }>) {
+    const canvasElement = document.getElementById('imcChartContainer') as HTMLCanvasElement | null;
+
+    if (canvasElement) {
+      if (imcChart) {
+        // Si le graphique existe, mettez à jour ses données
+        imcChart.data.labels = mesureData.slice(0, 7).map((item, index) => `JOUR ${index + 1}`);
+        imcChart.data.datasets[0].data = mesureData.slice(0, 7).map(item => item.imc);
+        imcChart.update();
+      } else {
+        // Si le graphique n'existe pas, créez-le
+        imcChart = new Chart(canvasElement, {
+          type: 'bar',
+          data: {
+            labels: mesureData.slice(0, 7).map((item, index) => `JOUR ${index + 1}`),
+            datasets: [
+              {
+                label: 'IMC',
+                data: mesureData.slice(-7).map(item => item.imc),
+                backgroundColor: 'rgba(75, 75, 192, 0.2)',
+                borderColor: 'rgba(75, 75, 192, 1)',
+                borderWidth: 1,
+              },
+            ],
+          },
+          options: {
+            scales: {
+              x: { stacked: true },
+              y: { stacked: true },
+            },
+          },
+        });
+      }
+    } else {
+      console.error("Élément HTML avec l'ID 'imcChartContainer' non trouvé ou n'est pas un élément canvas.");
+    }
+  }
+
 
 
   return (
@@ -158,7 +203,7 @@ function App() {
             </tr>
           </thead>
           <tbody>
-            {data.slice(0, 7).map(item => (
+            {mesureData.slice(-7).map(item => (
               <tr key={item.Id}>
                 <td>{item.taille}</td>
                 <td>{item.poids}</td>
@@ -170,17 +215,34 @@ function App() {
       </div>
       <div>
         <h1>Toutes les données :</h1>
-        <ul>
-          {data.map(item => (
-            <div>
-              <li key={item.Id}> Taille : {item.taille} Poids : {item.poids} IMC : {item.imc}</li>
-            </div>
-          ))}
-        </ul>
+        <div className="table-container">
+          <table className="custom-table">
+            <thead>
+              <tr>
+                <th>Taille</th>
+                <th>Poids</th>
+                <th>IMC</th>
+              </tr>
+            </thead>
+            <tbody>
+              {mesureData.map(item => (
+                <tr key={item.Id}>
+                  <td>{item.taille}</td>
+                  <td>{item.poids}</td>
+                  <td>{item.imc}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
 
       <div>
         <h2>Graphique sur 7 jours</h2>
+
+        {showChart && (
+          <canvas id="imcChartContainer"></canvas>
+        )}
 
       </div>
     </div>
