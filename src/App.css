@@ -1,7 +1,11 @@
 .App {
   text-align: center;
+  text-decoration: 'none',
 }
 
+a:-webkit-any-link{
+  text-decoration: 'none',
+}
 .oneDiv{
   height: 50px;
   background-color: #282c34;

@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import './App.css';
-import Inputimc from './composants/Inputimc';
-import CalculerIMCButton from './composants/CalculerIMCButton';
-import ResultIMC from './composants/ResultIMC';
-import imgIMC from './assets/imc.jpeg';
-import result from './assets/result.jpeg'
 import axios from 'axios';
 import Chart from 'chart.js/auto';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import Navigation from './composants/Navigate';
+import SevenImc from './composants/SevenImc';
+import AllImc from './composants/AllImc';
+import Home from './composants/Home';
+import Charts from './composants/Charts';
 
 
 
@@ -32,6 +33,8 @@ function App() {
         // Ici, 'response.data' contient les données récupérées depuis le backend.
         setMesureData(response.data);
         setLoading(false); // Mettre fin au chargement une fois les données récupérées.
+        createIMCChart(response.data);
+
       })
       .catch(error => {
         console.error('Erreur lors de la récupération des données : ', error);
@@ -39,12 +42,12 @@ function App() {
       });
   }, []); // Le tableau vide [] signifie que cet effet ne s'exécute qu'une fois (après le montage).
 
-  useEffect(() => {
-    // Utilisez vos données de mesure pour créer le graphique
-    createIMCChart(mesureData);
-    // Afficher le canevas après avoir créé le graphique
-    setShowChart(true)
-  }, []);
+  // useEffect(() => {
+  //   // Utilisez vos données de mesure pour créer le graphique
+  //   createIMCChart(mesureData);
+  //   // Afficher le canevas après avoir créé le graphique
+  //   setShowChart(true)
+  // }, []);
 
 
   if (loading) {
@@ -146,106 +149,30 @@ function App() {
 
 
   return (
-    <div className="App">
-      <div className='oneDiv'>
-
-      </div>
-      <header className="App-header">
-        <img src={imgIMC} alt='logo' width="100%" />
-        <h1>CALCULATEUR IMC</h1>
-      </header>
-      <img src={result} alt='' width="100%" />
-
-      <div className='app-input'>
-        <Inputimc type='cm' genre='taille' inputValue={inputTaille} onInputChange={setInputTaille} />
-        <Inputimc type='kg' genre='poids' inputValue={inputPoids} onInputChange={setInputPoids} />
-      </div>
-
-      <div style={{ margin: '20px' }}>
-        <CalculerIMCButton onCalculer={handleCalculer} />
-      </div>
-      <div className='divResult'>
-        <ResultIMC imc={imc} />
-      </div>
-      <div>
-        <h1>Dernière mesure entrée :</h1>
-        {lastMeasure && (
-          <div className="table-container">
-            <table className="custom-table">
-              <thead>
-                <tr>
-                  <th>Taille</th>
-                  <th>Poids</th>
-                  <th>IMC</th>
-                </tr>
-              </thead>
-              <tbody>
-
-                <tr >
-                  <td>{lastMeasure.taille}</td>
-                  <td>{lastMeasure.poids}</td>
-                  <td>{lastMeasure.imc}</td>
-                </tr>
-
-              </tbody>
-            </table>
+    <>
+      <div className="App">
+        <Router>
+          <div>
+            <Navigation />
+            <Routes>
+              <Route path="/" element={<Home inputTaille={inputTaille} inputPoids={inputPoids} imc={imc} setInputTaille={setInputTaille} setInputPoids={setInputPoids} handleCalculer={handleCalculer} />} />
+              <Route path="/sevenImc" element={<SevenImc mesureData={mesureData} />} />
+              <Route path="/allImc" element={<AllImc mesureData={mesureData} />} />
+              <Route path="/charts" element={<Charts showChart={showChart} mesureData={mesureData} />} />
+              allImc
+            </Routes>
           </div>
-        )}
-      </div>
-      <h1 >Données récupérées sur 7 jours :</h1>
-      <div className="table-container">
-        <table className="custom-table">
-          <thead>
-            <tr>
-              <th>Taille</th>
-              <th>Poids</th>
-              <th>IMC</th>
-            </tr>
-          </thead>
-          <tbody>
-            {mesureData.slice(-7).map(item => (
-              <tr key={item.Id}>
-                <td>{item.taille}</td>
-                <td>{item.poids}</td>
-                <td>{item.imc}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-      <div>
-        <h1>Toutes les données :</h1>
-        <div className="table-container">
-          <table className="custom-table">
-            <thead>
-              <tr>
-                <th>Taille</th>
-                <th>Poids</th>
-                <th>IMC</th>
-              </tr>
-            </thead>
-            <tbody>
-              {mesureData.map(item => (
-                <tr key={item.Id}>
-                  <td>{item.taille}</td>
-                  <td>{item.poids}</td>
-                  <td>{item.imc}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
+        </Router>
 
-      <div>
-        <h2>Graphique sur 7 jours</h2>
+        {/* <div style={{ display: 'none' }}>
+          {showChart && (
+            <canvas id="imcChartContainer"></canvas>
+          )}
 
-        {showChart && (
-          <canvas id="imcChartContainer"></canvas>
-        )}
+        </div> */}
 
       </div>
-    </div>
+    </>
   );
 }
 
