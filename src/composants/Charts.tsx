@@ -1,6 +1,5 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import Chart from 'chart.js/auto';
-
 
 interface ChartsProps {
     showChart: boolean,
@@ -11,13 +10,24 @@ interface ChartsProps {
         imc: number;
     }[]
 }
+
+
+
 function Charts({ showChart, mesureData }: ChartsProps) {
+    const chartRef = useRef<Chart | null>(null);
+
     useEffect(() => {
         if (showChart) {
             const canvasElement = document.getElementById('imcChartContainer') as HTMLCanvasElement | null;
 
             if (canvasElement) {
-                new Chart(canvasElement, {
+                // Détruire le graphique existant s'il y en a un
+                if (chartRef.current) {
+                    chartRef.current.destroy();
+                }
+
+                // Créer un nouveau graphique
+                chartRef.current = new Chart(canvasElement, {
                     type: 'bar',
                     data: {
                         labels: mesureData.slice(0, 7).map((item, index) => `JOUR ${index + 1}`),
@@ -36,6 +46,7 @@ function Charts({ showChart, mesureData }: ChartsProps) {
                             x: { stacked: true },
                             y: { stacked: true },
                         },
+
                     },
                 });
             } else {
@@ -45,13 +56,18 @@ function Charts({ showChart, mesureData }: ChartsProps) {
     }, [showChart, mesureData]);
 
     return (
-        <div>
+        <div className="container">
             <h2>Graphique sur 7 jours</h2>
 
-            {showChart && (
-                <canvas id="imcChartContainer"></canvas>
-            )}
+            <div className="chart-container">
+
+                {showChart && (
+                    <div className="charts">
+                        <canvas id="imcChartContainer"></canvas>
+                    </div>)}
+            </div>
         </div>
+
     );
 }
 

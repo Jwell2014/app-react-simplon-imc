@@ -9,7 +9,7 @@ const navStyle = {
 const linkStyle = {
     display: 'inline',      // Afficher les liens en ligne
     marginRight: '20px',    // Espacement entre les liens
-    textDecoration: 'none'!, // Supprimer la décoration par défaut (soulignement)
+    textDecoration: 'none', // Supprimer la décoration par défaut (soulignement)
     color: 'blue',          // Couleur du texte
 };
 

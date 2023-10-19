@@ -3,9 +3,13 @@
   text-decoration: 'none',
 }
 
-a:-webkit-any-link{
-  text-decoration: 'none',
+a:-webkit-any-link {
+  color: #282c34;
+  cursor: pointer;
+  text-decoration: none;
+  font-size: 20px;
 }
+
 .oneDiv{
   height: 50px;
   background-color: #282c34;
@@ -103,8 +107,9 @@ input{
 }
 
 .custom-table th {
-  background-color: #f2f2f2; /* Couleur de fond pour la ligne d'en-tête */
-  text-align: left;
+  background-color: #282c34; /* Couleur de fond pour la ligne d'en-tête */
+  text-align: center;
+  color: #D1D2D4;
 }
 
 /* Style pour les lignes paires du tableau (facultatif) */
@@ -116,8 +121,23 @@ input{
   display: flex;
   justify-content: center;
   align-items: center;
- 
 }
+
+.container{
+  margin-top: 50px;
+}
+.chart-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.charts{
+  width: 80%;
+  height: 80%;
+  margin-top: 50px;
+}
+
 
 
 /* Styles pour les écrans de largeur moyenne (par exemple, tablettes) */
